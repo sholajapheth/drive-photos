@@ -1,0 +1,123 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - name: Check formatting
+        run: npm run format:check
+
+  typecheck:
+    name: Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+
+  test:
+    name: Test (Node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [18, 20]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci
+      - run: npm run test:coverage
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
+        if: matrix.node == 20
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
+
+  audit:
+    name: Security audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm audit --audit-level=high
+
+  build:
+    name: Build
+    needs: [lint, typecheck, test, audit]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Build all packages
+        run: npm run build
+      - name: Verify dist outputs
+        run: |
+          test -f packages/core/dist/index.mjs || (echo "core ESM missing" && exit 1)
+          test -f packages/core/dist/index.cjs || (echo "core CJS missing" && exit 1)
+          test -f packages/core/dist/index.d.ts || (echo "core types missing" && exit 1)
+          test -f packages/react/dist/index.mjs || (echo "react ESM missing" && exit 1)
+          test -f packages/react/dist/index.cjs || (echo "react CJS missing" && exit 1)
+          test -f packages/react/dist/index.d.ts || (echo "react types missing" && exit 1)
+          test -f packages/react/dist/styles.css || (echo "react styles missing" && exit 1)
+          test -f packages/next/dist/index.mjs || (echo "next ESM missing" && exit 1)
+          test -f packages/next/dist/index.cjs || (echo "next CJS missing" && exit 1)
+          test -f packages/next/dist/index.d.ts || (echo "next types missing" && exit 1)
+          echo "All dist outputs verified"
+      - name: Check bundle size (dist folders)
+        run: |
+          CORE_SIZE=$(du -sk packages/core/dist | cut -f1)
+          REACT_SIZE=$(du -sk packages/react/dist | cut -f1)
+          NEXT_SIZE=$(du -sk packages/next/dist | cut -f1)
+          echo "core dist: ${CORE_SIZE}kb"
+          echo "react dist: ${REACT_SIZE}kb"
+          echo "next dist: ${NEXT_SIZE}kb"
+          [ "$CORE_SIZE" -lt 500 ] || (echo "core bundle too large" && exit 1)
+          [ "$REACT_SIZE" -lt 500 ] || (echo "react bundle too large" && exit 1)
+          [ "$NEXT_SIZE" -lt 500 ] || (echo "next bundle too large" && exit 1)
+      - name: Verify API key string not in react bundle
+        run: |
+          if grep -r "GOOGLE_DRIVE_API_KEY" packages/react/dist/ 2>/dev/null; then
+            echo "SECURITY: API key reference found in react bundle"
+            exit 1
+          fi
+          echo "OK: no GOOGLE_DRIVE_API_KEY in react dist"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist-packages
+          path: |
+            packages/*/dist
+          retention-days: 7

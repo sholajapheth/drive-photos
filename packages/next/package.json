@@ -1,0 +1,69 @@
+{
+  "name": "@drive-photos/next",
+  "version": "0.1.0",
+  "description": "Next.js App Router handlers and middleware for drive-photos",
+  "license": "MIT",
+  "author": {
+    "name": "Shola Japheth",
+    "url": "https://github.com/sholajapheth"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sholajapheth/drive-photos",
+    "directory": "packages/next"
+  },
+  "homepage": "https://drive-photos.dev",
+  "bugs": {
+    "url": "https://github.com/sholajapheth/drive-photos/issues"
+  },
+  "keywords": [
+    "google-drive",
+    "nextjs",
+    "next",
+    "app-router",
+    "photo-gallery",
+    "server-side",
+    "proxy",
+    "drive-photos",
+    "google-drive-api"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "peerDependencies": {
+    "next": ">=14"
+  },
+  "dependencies": {
+    "@drive-photos/core": "file:../core"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@vitest/coverage-v8": "^2.1.8",
+    "next": "^16.2.2",
+    "typescript": "^5.7.2"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "test": "vitest run --coverage",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src __tests__ --max-warnings 0",
+    "typecheck": "tsc --noEmit",
+    "clean": "rimraf dist"
+  }
+}

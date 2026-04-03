@@ -1,0 +1,7 @@
+dist
+node_modules
+.changeset
+coverage
+.next
+.turbo
+package-lock.json

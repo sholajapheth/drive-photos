@@ -1,0 +1,16 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config@2.3.0/schema.json",
+  "changelog": [
+    "@changesets/changelog-github",
+    {
+      "repo": "sholajapheth/drive-photos"
+    }
+  ],
+  "commit": false,
+  "fixed": [],
+  "linked": [["@drive-photos/core", "@drive-photos/react", "@drive-photos/next"]],
+  "access": "public",
+  "baseBranch": "main",
+  "updateInternalDependencies": "patch",
+  "ignore": ["drive-photos-docs"]
+}
