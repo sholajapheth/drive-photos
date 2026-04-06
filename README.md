@@ -62,9 +62,13 @@
 
 ## Docs app on Vercel
 
-Set **Root Directory** to **`.`** (repo root, or leave empty). Use only the root [`vercel.json`](./vercel.json): `npm ci` + Turbo build for `drive-photos-docs`. Do **not** set Root Directory to `apps/docs` with a nested `vercel.json` that runs `cd ../..` — when the build already runs from the repo root, that `cd` escapes the repo and `npm install` fails.
+The Next.js app lives under **`apps/docs`**, so Vercel must treat that folder as the project root (so `.next` is at `./.next`, not `apps/docs/.next` under a repo root).
 
-The GitHub **Deploy Docs** workflow runs `vercel-action` from the repo root so it picks up the same `vercel.json`.
+1. **Root Directory** → **`apps/docs`** (not `.`).
+2. Turn **on** **Include source files outside of the Root Directory in the Build Step** (Project → Settings → General) so the full monorepo (and `package-lock.json` at the repo root) is available.
+3. [`apps/docs/vercel.json`](./apps/docs/vercel.json) runs **`cd ../.. && npm ci`** and **`cd ../.. && npx turbo run build --filter=drive-photos-docs...`** so install and build execute from the **monorepo root** while the deployment root stays **`apps/docs`**.
+
+The **Deploy Docs** GitHub workflow uses `vercel-action` with **`working-directory: apps/docs`** to match this layout.
 
 **Debugging failed deploys**  
 Vercel → your deployment → **Building** → expand **Running "npm install"** (or **installCommand**) to see stderr (peer deps, lockfile, Node version, etc.).
