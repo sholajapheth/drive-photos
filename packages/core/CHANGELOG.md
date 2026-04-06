@@ -1,4 +1,4 @@
-# @drive-photos/core
+# @sholajapheth/drive-photos-core
 
 ## 0.1.0
 

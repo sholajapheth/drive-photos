@@ -1,4 +1,4 @@
-# @drive-photos/next
+# @sholajapheth/drive-photos-next
 
 Next.js App Router helpers for listing Drive photos and proxying images without exposing API keys to browsers.
 
@@ -12,7 +12,7 @@ Next.js App Router helpers for listing Drive photos and proxying images without 
 ### List: `app/api/photos/route.ts`
 
 ```ts
-import { createPhotosRoute } from '@drive-photos/next';
+import { createPhotosRoute } from '@sholajapheth/drive-photos-next';
 
 export const { GET } = createPhotosRoute({
   apiKey: process.env.GOOGLE_DRIVE_API_KEY!,
@@ -24,7 +24,7 @@ export const { GET } = createPhotosRoute({
 ### Proxy: `app/api/photos/[id]/route.ts`
 
 ```ts
-import { createPhotoProxyRoute } from '@drive-photos/next';
+import { createPhotoProxyRoute } from '@sholajapheth/drive-photos-next';
 
 export const { GET } = createPhotoProxyRoute({
   apiKey: process.env.GOOGLE_DRIVE_API_KEY!,
@@ -34,7 +34,7 @@ export const { GET } = createPhotoProxyRoute({
 ### Middleware: `middleware.ts`
 
 ```ts
-import { drivePhotosMiddleware } from '@drive-photos/next';
+import { drivePhotosMiddleware } from '@sholajapheth/drive-photos-next';
 
 export default drivePhotosMiddleware();
 ```

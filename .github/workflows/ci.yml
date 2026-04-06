@@ -92,7 +92,7 @@ jobs:
           test -f packages/react/dist/index.mjs || (echo "react ESM missing" && exit 1)
           test -f packages/react/dist/index.cjs || (echo "react CJS missing" && exit 1)
           test -f packages/react/dist/index.d.ts || (echo "react types missing" && exit 1)
-          test -f packages/react/dist/styles.css || (echo "react styles missing" && exit 1)
+          test -f packages/react/src/styles.css || (echo "react styles.css missing" && exit 1)
           test -f packages/next/dist/index.mjs || (echo "next ESM missing" && exit 1)
           test -f packages/next/dist/index.cjs || (echo "next CJS missing" && exit 1)
           test -f packages/next/dist/index.d.ts || (echo "next types missing" && exit 1)

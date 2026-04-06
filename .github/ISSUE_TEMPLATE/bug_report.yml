@@ -11,7 +11,7 @@ body:
     attributes:
       label: Package
       description: Which package is affected?
-      placeholder: '@drive-photos/react'
+      placeholder: '@sholajapheth/drive-photos-react'
     validations:
       required: true
 

@@ -2,7 +2,7 @@
 
 ## What is protected
 
-- **API keys**: Never included in error messages, logs, or HTTP responses from this library’s helpers. Prefer server-side routes (`@drive-photos/next`) and avoid embedding keys in client bundles.
+- **API keys**: Never included in error messages, logs, or HTTP responses from this library’s helpers. Prefer server-side routes (`@sholajapheth/drive-photos-next`) and avoid embedding keys in client bundles.
 - **Inputs**: Folder ids, file ids, and sizes are validated before any network call. File ids are restricted to safe characters to mitigate path traversal in proxy routes.
 - **SSRF**: The image proxy only fetches `https` URLs on an explicit hostname allowlist (`www.googleapis.com`, `drive.google.com`, `lh3.googleusercontent.com`).
 - **Rate limiting**: Client-side throttling in `useDriveGallery` and optional Next.js middleware for `/api/photos` routes.

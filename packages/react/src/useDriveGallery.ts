@@ -8,7 +8,7 @@ import {
   validateConfig,
   type DrivePhoto,
   type FetchPhotosResult,
-} from '@drive-photos/core';
+} from '@sholajapheth/drive-photos-core';
 
 /**
  * Options for {@link useDriveGallery}.

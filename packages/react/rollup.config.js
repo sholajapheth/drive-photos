@@ -5,7 +5,7 @@ import dts from 'rollup-plugin-dts';
 export default [
   {
     input: 'src/index.ts',
-    external: ['react', 'react-dom', 'react/jsx-runtime', '@drive-photos/core'],
+    external: ['react', 'react-dom', 'react/jsx-runtime', '@sholajapheth/drive-photos-core'],
     output: [
       { file: 'dist/index.mjs', format: 'es', sourcemap: true, banner: "'use client';" },
       {

@@ -1,5 +1,5 @@
 {
-  "name": "@drive-photos/react",
+  "name": "@sholajapheth/drive-photos-react",
   "version": "0.1.0",
   "description": "React gallery and hooks for Google Drive photo folders",
   "license": "MIT",
@@ -55,7 +55,7 @@
     "react-dom": ">=18"
   },
   "dependencies": {
-    "@drive-photos/core": "0.1.0"
+    "@sholajapheth/drive-photos-core": "0.1.0"
   },
   "devDependencies": {
     "@testing-library/dom": "^10.4.0",

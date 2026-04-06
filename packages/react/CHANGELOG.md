@@ -1,4 +1,4 @@
-# @drive-photos/react
+# @sholajapheth/drive-photos-react
 
 ## 0.1.0
 

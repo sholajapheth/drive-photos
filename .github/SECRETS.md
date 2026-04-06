@@ -18,7 +18,7 @@ If `NPM_TOKEN` is missing, npm may try **OIDC trusted publishing**; if that is n
 
 ### Granular tokens
 
-If you use a **granular** token instead, ensure it has permission to publish the `@drive-photos` scope and is allowed for automation (per npm’s UI).
+If you use a **granular** token instead, ensure it has permission to publish packages under **`@sholajapheth`** and is allowed for automation (per npm’s UI).
 
 ## Required for docs deploy (`docs.yml`)
 
@@ -39,6 +39,10 @@ From the linked project, e.g. after `vercel link` in `apps/docs`, read `.vercel/
 ### `DOCS_DEMO_FOLDER_ID`
 
 Google Drive folder id for the public demo on the docs app (passed as `NEXT_PUBLIC_DEMO_FOLDER_ID` during the docs build in CI).
+
+## npm publish `404` / scope
+
+If `changeset publish` fails with **`404 Not Found - PUT ... @sholajapheth%2f...`**, your npm user may not own the **`@sholajapheth`** scope (npm username must match), or the token cannot publish to that scope.
 
 ## After secrets are set
 

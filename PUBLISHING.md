@@ -2,10 +2,9 @@
 
 ## First-time checklist
 
-1. **npm scope** — Log in and ensure the `@drive-photos` scope is available under your npm org or user.  
-   [npm scope docs](https://docs.npmjs.com/about-organizations)
+1. **npm user scope** — Packages are published as `@sholajapheth/drive-photos-core`, `@sholajapheth/drive-photos-react`, and `@sholajapheth/drive-photos-next`. Your [npm username](https://www.npmjs.com/settings/~/profile) must be **`sholajapheth`** (or change every `name` in `packages/*/package.json` to match the account you use to publish).
 
-2. **Internal deps** — Published packages use the same semver as the workspace (e.g. `"@drive-photos/core": "0.1.0"`). Linked `changeset version` bumps keep them aligned. `npm install` at the repo root links workspaces to satisfy those ranges.
+2. **Internal deps** — Published packages use the same semver as the workspace (e.g. `"@sholajapheth/drive-photos-core": "0.1.0"`). Linked `changeset version` bumps keep them aligned. `npm install` at the repo root links workspaces to satisfy those ranges.
 
 3. **GitHub repo** — Replace `sholajapheth/drive-photos` in `package.json` files if your repository URL differs.
 
@@ -23,7 +22,7 @@
    npx changeset
    ```
 
-   Commit the generated file under `.changeset/`, open a PR, merge to `main`. The release workflow opens or updates the “Version packages” PR; merging that PR runs `changeset publish` and publishes `@drive-photos/core`, `@drive-photos/react`, and `@drive-photos/next` together (linked versioning).
+   Commit the generated file under `.changeset/`, open a PR, merge to `main`. The release workflow opens or updates the “Version packages” PR; merging that PR runs `changeset publish` and publishes the three packages together (linked versioning).
 
 ## Day-to-day
 

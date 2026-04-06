@@ -5,7 +5,7 @@ import dts from 'rollup-plugin-dts';
 export default [
   {
     input: 'src/index.ts',
-    external: ['next/server', '@drive-photos/core'],
+    external: ['next/server', '@sholajapheth/drive-photos-core'],
     output: [
       { file: 'dist/index.mjs', format: 'es', sourcemap: true },
       { file: 'dist/index.cjs', format: 'cjs', sourcemap: true, exports: 'named' },

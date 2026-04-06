@@ -1,4 +1,4 @@
-# @drive-photos/react
+# @sholajapheth/drive-photos-react
 
 React components and hooks for Google Drive photo galleries.
 
@@ -38,7 +38,7 @@ React components and hooks for Google Drive photo galleries.
 Import styles:
 
 ```ts
-import '@drive-photos/react/styles.css';
+import '@sholajapheth/drive-photos-react/styles.css';
 ```
 
 ## `useDriveGallery(options)`

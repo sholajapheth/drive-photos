@@ -1,5 +1,9 @@
 import { useCallback, useMemo, useState } from 'react';
-import { buildFallbackUrls, sanitizePhotoName, type DrivePhoto } from '@drive-photos/core';
+import {
+  buildFallbackUrls,
+  sanitizePhotoName,
+  type DrivePhoto,
+} from '@sholajapheth/drive-photos-core';
 
 /**
  * Props for {@link ImageWithFallback}.

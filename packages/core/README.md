@@ -1,4 +1,4 @@
-# @drive-photos/core
+# @sholajapheth/drive-photos-core
 
 Framework-agnostic utilities for listing Google Drive images, validating inputs, caching, and building image URL fallbacks.
 

@@ -1,5 +1,5 @@
 {
-  "name": "@drive-photos/core",
+  "name": "@sholajapheth/drive-photos-core",
   "version": "0.1.0",
   "description": "Framework-agnostic Google Drive photo listing, validation, and image fallback utilities",
   "license": "MIT",

@@ -4,7 +4,7 @@ import {
   normalizeFolderId,
   validateApiKey,
   type DrivePhoto,
-} from '@drive-photos/core';
+} from '@sholajapheth/drive-photos-core';
 import { ImageWithFallback } from './ImageWithFallback.js';
 import { PhotoModal } from './Modal.js';
 import { SkeletonGrid } from './Skeleton.js';

@@ -13,5 +13,5 @@ export {
   type UseDriveGalleryReturn,
 } from './useDriveGallery.js';
 
-export { DrivePhotosError } from '@drive-photos/core';
-export type { DrivePhoto } from '@drive-photos/core';
+export { DrivePhotosError } from '@sholajapheth/drive-photos-core';
+export type { DrivePhoto } from '@sholajapheth/drive-photos-core';

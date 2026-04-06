@@ -19,7 +19,7 @@ export default function Page() {
         <h2>Quickstart</h2>
         <ol>
           <li>
-            <code>npm install @drive-photos/react</code>
+            <code>npm install @sholajapheth/drive-photos-react</code>
           </li>
           <li>Set server environment variables for the Next.js routes (recommended).</li>
           <li>

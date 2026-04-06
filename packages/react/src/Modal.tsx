@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useId, useRef, type KeyboardEvent } from 'react';
-import { sanitizePhotoName, type DrivePhoto } from '@drive-photos/core';
+import { sanitizePhotoName, type DrivePhoto } from '@sholajapheth/drive-photos-core';
 import { ImageWithFallback } from './ImageWithFallback.js';
 
 /**

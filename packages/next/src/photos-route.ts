@@ -4,7 +4,7 @@ import {
   normalizeFolderId,
   validateConfig,
   type DriveGalleryConfig,
-} from '@drive-photos/core';
+} from '@sholajapheth/drive-photos-core';
 import { NextResponse, type NextRequest } from 'next/server';
 
 export type PhotosRouteConfig = DriveGalleryConfig & {

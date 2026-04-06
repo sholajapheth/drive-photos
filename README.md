@@ -2,7 +2,7 @@
 
 **Google Drive photo folders in your web app — batteries included.**
 
-[![npm version](https://img.shields.io/npm/v/@drive-photos/react.svg)](https://www.npmjs.com/package/@drive-photos/react)
+[![npm version](https://img.shields.io/npm/v/@sholajapheth/drive-photos-react.svg)](https://www.npmjs.com/package/@sholajapheth/drive-photos-react)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 ## Features
@@ -20,16 +20,16 @@
 1. **Install**
 
    ```bash
-   npm install @drive-photos/react
+   npm install @sholajapheth/drive-photos-react
    ```
 
-2. **Configure secrets on the server** (recommended): set `GOOGLE_DRIVE_API_KEY` and expose a list route using `@drive-photos/next` (see package README).
+2. **Configure secrets on the server** (recommended): set `GOOGLE_DRIVE_API_KEY` and expose a list route using `@sholajapheth/drive-photos-next` (see package README).
 
 3. **Render the gallery**
 
    ```tsx
-   import { DriveGallery } from '@drive-photos/react';
-   import '@drive-photos/react/styles.css';
+   import { DriveGallery } from '@sholajapheth/drive-photos-react';
+   import '@sholajapheth/drive-photos-react/styles.css';
 
    export function Album() {
      return (
@@ -46,32 +46,31 @@
 
 ## Packages
 
-| Package               | Purpose                                                                          |
-| --------------------- | -------------------------------------------------------------------------------- |
-| `@drive-photos/core`  | Drive API listing, normalization, sanitization, caching, fallbacks               |
-| `@drive-photos/react` | `<DriveGallery />`, `useDriveGallery`, UI primitives                             |
-| `@drive-photos/next`  | App Router `createPhotosRoute`, `createPhotoProxyRoute`, `drivePhotosMiddleware` |
+| Package                            | Purpose                                                                          |
+| ---------------------------------- | -------------------------------------------------------------------------------- |
+| `@sholajapheth/drive-photos-core`  | Drive API listing, normalization, sanitization, caching, fallbacks               |
+| `@sholajapheth/drive-photos-react` | `<DriveGallery />`, `useDriveGallery`, UI primitives                             |
+| `@sholajapheth/drive-photos-next`  | App Router `createPhotosRoute`, `createPhotoProxyRoute`, `drivePhotosMiddleware` |
 
 ## Migrating from `react-gdrive-image-viewer`
 
-| Before                                      | After                                                          |
-| ------------------------------------------- | -------------------------------------------------------------- |
-| `import X from 'react-gdrive-image-viewer'` | `import { DriveGallery } from '@drive-photos/react'`           |
-| `<Viewer gkey={...} dirId={...} />`         | `<DriveGallery gkey={...} dirId={...} />`                      |
-| `options`                                   | Same shape, plus `imageSize`, `listEndpoint`, `skeleton`, etc. |
+| Before                                      | After                                                             |
+| ------------------------------------------- | ----------------------------------------------------------------- |
+| `import X from 'react-gdrive-image-viewer'` | `import { DriveGallery } from '@sholajapheth/drive-photos-react'` |
+| `<Viewer gkey={...} dirId={...} />`         | `<DriveGallery gkey={...} dirId={...} />`                         |
+| `options`                                   | Same shape, plus `imageSize`, `listEndpoint`, `skeleton`, etc.    |
 
 ## Docs app on Vercel
 
-The docs app lives under `apps/docs`. Either:
+Use the **repository root** as the Vercel **Root Directory** (`.` or leave empty). The root [`vercel.json`](./vercel.json) runs `npm ci` and `npx turbo run build --filter=drive-photos-docs...` so the monorepo lockfile and workspace packages are available.
 
-- Set the Vercel project **Root Directory** to the **repository root** (`.`) so `package-lock.json` is on disk; the repo root [`vercel.json`](./vercel.json) runs `npm ci` and Turbo, or
-- Keep **Root Directory** `apps/docs` and turn on **Include source files outside of the Root Directory in the Build Step** (Project → Settings → General), so `cd ../.. && npm install` can see the monorepo `package.json` / lockfile.
+Do **not** commit a second `vercel.json` under `apps/docs` that runs `cd ../..` when the project root is already the repo root — that escapes the repo and breaks install.
 
-Without one of these, `npm ci` fails because the parent folder is not part of the deployment.
+If you must set **Root Directory** to `apps/docs` only, enable **Include source files outside of the Root Directory in the Build Step** (Project → Settings → General) and set **Install Command** to `cd ../.. && npm ci` in the Vercel dashboard.
 
 ## Security
 
-See [SECURITY.md](./SECURITY.md). API keys must never be logged or returned to clients; prefer `@drive-photos/next` routes and `options.listEndpoint` for production.
+See [SECURITY.md](./SECURITY.md). API keys must never be logged or returned to clients; prefer `@sholajapheth/drive-photos-next` routes and `options.listEndpoint` for production.
 
 ## Contributing
 

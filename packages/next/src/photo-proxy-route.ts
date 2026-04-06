@@ -4,7 +4,7 @@ import {
   fallbackIndexToLevel,
   validateFileId,
   validateSize,
-} from '@drive-photos/core';
+} from '@sholajapheth/drive-photos-core';
 import { NextResponse, type NextRequest } from 'next/server';
 
 const ALLOWED = new Set(['www.googleapis.com', 'drive.google.com', 'lh3.googleusercontent.com']);

@@ -1,5 +1,5 @@
-import { DriveGallery } from '@drive-photos/react';
-import '@drive-photos/react/styles.css';
+import { DriveGallery } from '@sholajapheth/drive-photos-react';
+import '@sholajapheth/drive-photos-react/styles.css';
 
 export default function DemoPage() {
   const gkey = process.env.NEXT_PUBLIC_PLACEHOLDER_GKEY ?? '1234567890abcdefghij';
