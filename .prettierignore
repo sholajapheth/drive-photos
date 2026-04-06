@@ -5,3 +5,6 @@ coverage
 .next
 .turbo
 package-lock.json
+
+# Next.js generates this; formatting drifts between local/CI
+**/next-env.d.ts

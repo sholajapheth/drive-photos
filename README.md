@@ -62,11 +62,14 @@
 
 ## Docs app on Vercel
 
-Use the **repository root** as the Vercel **Root Directory** (`.` or leave empty). The root [`vercel.json`](./vercel.json) runs `npm ci` and `npx turbo run build --filter=drive-photos-docs...` so the monorepo lockfile and workspace packages are available.
+**Option A — Root Directory = repo root (recommended)**  
+Set **Root Directory** to **`.`** (or leave empty). Vercel uses the root [`vercel.json`](./vercel.json): `npm ci` + Turbo. The whole repo (including `package-lock.json`) is present.
 
-Do **not** commit a second `vercel.json` under `apps/docs` that runs `cd ../..` when the project root is already the repo root — that escapes the repo and breaks install.
+**Option B — Root Directory = `apps/docs`**  
+Turn **on** **Include source files outside of the Root Directory in the Build Step** (Project → Settings → General). Vercel then uses [`apps/docs/vercel.json`](./apps/docs/vercel.json), which runs install/build from `../..` so workspaces resolve. If install still fails, check the build log **Install** step for the exact `npm` error.
 
-If you must set **Root Directory** to `apps/docs` only, enable **Include source files outside of the Root Directory in the Build Step** (Project → Settings → General) and set **Install Command** to `cd ../.. && npm ci` in the Vercel dashboard.
+**Debugging failed deploys**  
+Vercel → your deployment → **Building** → expand **Running "npm install"** (or **installCommand**) to see stderr (peer deps, lockfile, Node version, etc.).
 
 ## Security
 
@@ -85,3 +88,5 @@ Publishing: see [PUBLISHING.md](./PUBLISHING.md). CI secrets: [.github/SECRETS.m
 ## License
 
 MIT
+
+NPM_CONFIG_OTP=123456 npm run publish-packages
