@@ -62,13 +62,14 @@
 
 ## Docs app on Vercel
 
-The Next.js app lives under **`apps/docs`**, so Vercel must treat that folder as the project root (so `.next` is at `./.next`, not `apps/docs/.next` under a repo root).
+Use the **repository root** as the Vercel project root (Root Directory **`.`** or empty). The app still lives in **`apps/docs`**; the root [`vercel.json`](./vercel.json) runs **`npm ci`** and Turbo from the monorepo root, then **copies** `apps/docs/.next` to **`.next`** at the repo root so Vercel’s Next.js step finds the build output (see [Turborepo on Vercel](https://vercel.com/docs/monorepos/turborepo)).
 
-1. **Root Directory** → **`apps/docs`** (not `.`).
-2. Turn **on** **Include source files outside of the Root Directory in the Build Step** (Project → Settings → General) so the full monorepo (and `package-lock.json` at the repo root) is available.
-3. [`apps/docs/vercel.json`](./apps/docs/vercel.json) runs **`cd ../.. && npm ci`** and **`cd ../.. && npx turbo run build --filter=drive-photos-docs...`** so install and build execute from the **monorepo root** while the deployment root stays **`apps/docs`**.
+1. **Root Directory** → **`.`** (or leave empty). Do **not** set Root Directory to **`apps/docs`** unless that path exists in the Git deployment you connected (see below).
+2. **Framework preset** can stay **Next.js** (auto or manual).
+3. No `apps/docs/vercel.json` — install/build are defined only in the root `vercel.json`.
 
-The **Deploy Docs** GitHub workflow uses `vercel-action` with **`working-directory: apps/docs`** to match this layout.
+**If Vercel says Root Directory `apps/docs` “does not exist”**  
+That path is resolved from your **connected Git repository**. Typical causes: the project is linked to a **different** repo or branch than the one that contains `apps/docs`, the folder was **never pushed**, or the name **does not match** (case-sensitive on Linux: `Apps/docs` ≠ `apps/docs`). Fix the Git connection or push the monorepo layout, then set Root Directory again if you prefer the “app folder as root” setup.
 
 **Debugging failed deploys**  
 Vercel → your deployment → **Building** → expand **Running "npm install"** (or **installCommand**) to see stderr (peer deps, lockfile, Node version, etc.).
