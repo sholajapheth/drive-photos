@@ -5,7 +5,7 @@
 1. **npm scope** — Log in and ensure the `@drive-photos` scope is available under your npm org or user.  
    [npm scope docs](https://docs.npmjs.com/about-organizations)
 
-2. **Monorepo links** — Internal packages use `file:../…` dependencies so installs work everywhere. When you run `changeset publish`, npm publishes each package with proper semver ranges for `@drive-photos/core` in dependents. (You can switch to `workspace:*` if your npm version supports it and you prefer that style.)
+2. **Internal deps** — Published packages use the same semver as the workspace (e.g. `"@drive-photos/core": "0.1.0"`). Linked `changeset version` bumps keep them aligned. `npm install` at the repo root links workspaces to satisfy those ranges.
 
 3. **GitHub repo** — Replace `sholajapheth/drive-photos` in `package.json` files if your repository URL differs.
 

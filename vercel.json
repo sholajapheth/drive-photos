@@ -1,0 +1,4 @@
+{
+  "installCommand": "npm ci",
+  "buildCommand": "npx turbo run build --filter=drive-photos-docs..."
+}

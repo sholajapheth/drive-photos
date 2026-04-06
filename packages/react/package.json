@@ -55,7 +55,7 @@
     "react-dom": ">=18"
   },
   "dependencies": {
-    "@drive-photos/core": "file:../core"
+    "@drive-photos/core": "0.1.0"
   },
   "devDependencies": {
     "@testing-library/dom": "^10.4.0",

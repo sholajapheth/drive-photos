@@ -60,6 +60,15 @@
 | `<Viewer gkey={...} dirId={...} />`         | `<DriveGallery gkey={...} dirId={...} />`                      |
 | `options`                                   | Same shape, plus `imageSize`, `listEndpoint`, `skeleton`, etc. |
 
+## Docs app on Vercel
+
+The docs app lives under `apps/docs`. Either:
+
+- Set the Vercel project **Root Directory** to the **repository root** (`.`) so `package-lock.json` is on disk; the repo root [`vercel.json`](./vercel.json) runs `npm ci` and Turbo, or
+- Keep **Root Directory** `apps/docs` and turn on **Include source files outside of the Root Directory in the Build Step** (Project → Settings → General), so `cd ../.. && npm install` can see the monorepo `package.json` / lockfile.
+
+Without one of these, `npm ci` fails because the parent folder is not part of the deployment.
+
 ## Security
 
 See [SECURITY.md](./SECURITY.md). API keys must never be logged or returned to clients; prefer `@drive-photos/next` routes and `options.listEndpoint` for production.

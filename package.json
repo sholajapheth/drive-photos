@@ -40,7 +40,7 @@
     "audit": "npm audit --audit-level=high",
     "changeset": "changeset",
     "version-packages": "changeset version",
-    "publish-packages": "turbo run build && changeset publish",
+    "publish-packages": "turbo run build --filter='./packages/*' && changeset publish",
     "clean": "turbo run clean"
   },
   "devDependencies": {

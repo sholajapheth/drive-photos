@@ -4,11 +4,21 @@ Configure under **Settings → Secrets and variables → Actions**.
 
 ## Required for npm publish (`release.yml`)
 
-### `NPM_TOKEN`
+### `NPM_TOKEN` (strongly recommended)
 
-1. [npmjs.com](https://www.npmjs.com/) → Access Tokens → **Granular** or **Classic** (automation-capable).
-2. Add repository secret `NPM_TOKEN` with the token value.
-3. Used by `changesets/action` to run `changeset publish` with provenance (`NPM_CONFIG_PROVENANCE`).
+CI **cannot** use an interactive OTP. If your npm account has **2FA enabled for publishing**, you must use a token that is allowed to publish **without** a one-time password.
+
+1. [npmjs.com](https://www.npmjs.com/) → **Access Tokens** → **Generate New Token** → **Classic**.
+2. Choose type **Automation** (classic automation tokens bypass 2FA when publishing from CI).
+3. Add repository secret **`NPM_TOKEN`** with that token value.
+
+If `NPM_TOKEN` is missing, npm may try **OIDC trusted publishing**; if that is not fully configured on the npm side, publish can still fail with **`EOTP`** (one-time password required).
+
+**Do not** use a “Publish” token that requires 2FA on every publish.
+
+### Granular tokens
+
+If you use a **granular** token instead, ensure it has permission to publish the `@drive-photos` scope and is allowed for automation (per npm’s UI).
 
 ## Required for docs deploy (`docs.yml`)
 
