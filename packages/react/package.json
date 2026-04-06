@@ -39,10 +39,11 @@
       "require": "./dist/index.cjs",
       "types": "./dist/index.d.ts"
     },
-    "./styles.css": "./dist/styles.css"
+    "./styles.css": "./src/styles.css"
   },
   "files": [
     "dist",
+    "src/styles.css",
     "README.md",
     "CHANGELOG.md"
   ],
@@ -69,7 +70,7 @@
     "typescript": "^5.7.2"
   },
   "scripts": {
-    "build": "rollup -c && cp src/styles.css dist/styles.css",
+    "build": "rollup -c",
     "test": "vitest run --coverage",
     "test:coverage": "vitest run --coverage",
     "lint": "eslint src __tests__ --max-warnings 0",

@@ -25,7 +25,7 @@ jobs:
       - run: npm ci
 
       - name: Build docs
-        run: npx turbo run build --filter=drive-photos-docs
+        run: npx turbo run build --filter=drive-photos-docs...
         env:
           NEXT_PUBLIC_DEMO_FOLDER_ID: ${{ secrets.DOCS_DEMO_FOLDER_ID }}
 
