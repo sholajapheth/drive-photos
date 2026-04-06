@@ -6,15 +6,20 @@ Configure under **Settings → Secrets and variables → Actions**.
 
 ### `NPM_TOKEN` (strongly recommended)
 
-CI **cannot** use an interactive OTP. If your npm account has **2FA enabled for publishing**, you must use a token that is allowed to publish **without** a one-time password.
+CI **cannot** type an OTP. If you see **`EOTP`** in Actions, your workflow is not using a token that is exempt from OTP for automation.
 
-1. [npmjs.com](https://www.npmjs.com/) → **Access Tokens** → **Generate New Token** → **Classic**.
-2. Choose type **Automation** (classic automation tokens bypass 2FA when publishing from CI).
+1. [npmjs.com](https://www.npmjs.com/) → **Access Tokens** → **Generate New Token** → **Classic** (not granular, unless you know granular supports automation for your account).
+2. Choose type **Automation** — [documented by npm](https://docs.npmjs.com/about-access-tokens) as intended for CI/CD and **not** requiring a one-time password when publishing.
 3. Add repository secret **`NPM_TOKEN`** with that token value.
 
-If `NPM_TOKEN` is missing, npm may try **OIDC trusted publishing**; if that is not fully configured on the npm side, publish can still fail with **`EOTP`** (one-time password required).
+**Common mistakes**
 
-**Do not** use a “Publish” token that requires 2FA on every publish.
+- Using a **granular** “Publish” token while 2FA is required for writes — often still triggers **EOTP** in CI.
+- Expecting to “enter OTP” in GitHub Actions — you cannot; use an **Automation** classic token, or publish from your laptop with `NPM_CONFIG_OTP` (see [PUBLISHING.md](../PUBLISHING.md)).
+
+If `NPM_TOKEN` is missing, npm may try **OIDC trusted publishing**; that path can still hit **EOTP** if your account requires OTP for publishes.
+
+**Do not** use a token that requires 2FA on every `npm publish` unless you only publish manually from your machine.
 
 ### Granular tokens
 
