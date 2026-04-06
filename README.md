@@ -62,11 +62,9 @@
 
 ## Docs app on Vercel
 
-**Option A — Root Directory = repo root (recommended)**  
-Set **Root Directory** to **`.`** (or leave empty). Vercel uses the root [`vercel.json`](./vercel.json): `npm ci` + Turbo. The whole repo (including `package-lock.json`) is present.
+Set **Root Directory** to **`.`** (repo root, or leave empty). Use only the root [`vercel.json`](./vercel.json): `npm ci` + Turbo build for `drive-photos-docs`. Do **not** set Root Directory to `apps/docs` with a nested `vercel.json` that runs `cd ../..` — when the build already runs from the repo root, that `cd` escapes the repo and `npm install` fails.
 
-**Option B — Root Directory = `apps/docs`**  
-Turn **on** **Include source files outside of the Root Directory in the Build Step** (Project → Settings → General). Vercel then uses [`apps/docs/vercel.json`](./apps/docs/vercel.json), which runs install/build from `../..` so workspaces resolve. If install still fails, check the build log **Install** step for the exact `npm` error.
+The GitHub **Deploy Docs** workflow runs `vercel-action` from the repo root so it picks up the same `vercel.json`.
 
 **Debugging failed deploys**  
 Vercel → your deployment → **Building** → expand **Running "npm install"** (or **installCommand**) to see stderr (peer deps, lockfile, Node version, etc.).
@@ -88,5 +86,3 @@ Publishing: see [PUBLISHING.md](./PUBLISHING.md). CI secrets: [.github/SECRETS.m
 ## License
 
 MIT
-
-NPM_CONFIG_OTP=123456 npm run publish-packages

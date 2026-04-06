@@ -33,7 +33,7 @@ If you use a **granular** token instead, ensure it has permission to publish pac
 
 ### `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID`
 
-From the linked project, e.g. after `vercel link` in `apps/docs`, read `.vercel/project.json` (do not commit that file).
+From the linked project: run `vercel link` at the **repo root** (same as CI), then read `.vercel/project.json` (do not commit that file).
 
 ## Optional
 
