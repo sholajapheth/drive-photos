@@ -69,6 +69,52 @@ describe('listDrivePhotos', () => {
     ).rejects.toMatchObject({ code: 'RATE_LIMITED' });
   });
 
+  it('returns nonImageFiles when warnNonImageFilesInFolder and folder has non-images', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    vi.mocked(fetch)
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            files: [
+              {
+                id: 'f1',
+                name: 'a.jpg',
+                mimeType: 'image/jpeg',
+                createdTime: '2020-01-01T00:00:00.000Z',
+              },
+            ],
+          }),
+          { status: 200 }
+        )
+      )
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            files: [
+              {
+                id: 'd1',
+                name: 'doc.pdf',
+                mimeType: 'application/pdf',
+                createdTime: '2020-01-01T00:00:00.000Z',
+              },
+            ],
+          }),
+          { status: 200 }
+        )
+      );
+
+    const r = await listDrivePhotos({
+      apiKey: validKey,
+      folderId: validFolder,
+      warnNonImageFilesInFolder: true,
+    });
+    expect(r.photos).toHaveLength(1);
+    expect(r.nonImageFiles?.length).toBe(1);
+    expect(r.nonImageFiles?.[0]?.name).toContain('doc');
+    expect(warn).toHaveBeenCalled();
+    warn.mockRestore();
+  });
+
   it('error messages never include raw api key', async () => {
     vi.mocked(fetch).mockResolvedValue(
       new Response(JSON.stringify({ error: { message: 'bad key=SECRET' } }), { status: 400 })

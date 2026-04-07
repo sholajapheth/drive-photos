@@ -13,6 +13,8 @@ export interface PhotoModalProps {
   onIndexChange: (index: number) => void;
   fullscreenSize?: number;
   titleId?: string;
+  /** Base path for the first-party image proxy (default `/api/photos`). */
+  proxyBase?: string;
 }
 
 /**
@@ -28,6 +30,7 @@ export function PhotoModal({
   onIndexChange,
   fullscreenSize = 1920,
   titleId,
+  proxyBase,
 }: PhotoModalProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const autoId = useId();
@@ -91,6 +94,7 @@ export function PhotoModal({
             size={fullscreenSize}
             priority
             className="drive-photos-modal-img"
+            proxyBase={proxyBase}
           />
         </div>
         <p id={labelId} className="drive-photos-modal-caption">

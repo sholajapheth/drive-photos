@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   DrivePhotosError,
   normalizeFolderId,
@@ -14,6 +14,18 @@ import { useDriveGallery } from './useDriveGallery.js';
  * Props compatible with `react-gdrive-image-viewer` plus extensions.
  */
 export interface DriveGalleryProps {
+  /**
+   * Google API key for the Drive API.
+   *
+   * @deprecated For production use. Passing an API key directly exposes it in your client-side JavaScript
+   * bundle. Use the Next.js proxy pattern with `options.listEndpoint` and `options.proxyEndpoint` instead.
+   *
+   * **Security:** In a browser build, any value you pass here is bundled into client JavaScript and can be
+   * extracted from DevTools or `strings` on the bundle. For production, prefer `options.listEndpoint` with
+   * `@sholajapheth/drive-photos-next` so the key stays on the server.
+   *
+   * @see https://drive-photos.dev/docs#api-key-security
+   */
   gkey: string;
   dirId: string;
   name?: string;
@@ -44,6 +56,17 @@ export interface DriveGalleryProps {
     onError?: (error: DrivePhotosError) => void;
     /** When set, loads photo list from this URL (recommended for production). */
     listEndpoint?: string;
+    /**
+     * Base path for the first-party image proxy (default `/api/photos`). Must match your
+     * `createPhotoProxyRoute` mount path.
+     */
+    proxyEndpoint?: string;
+    /**
+     * When true (and not using `listEndpoint`), performs an extra Drive query to detect non-image files in the folder.
+     */
+    warnNonImageFilesInFolder?: boolean;
+    /** Called when non-image files are detected in the shared folder. */
+    onNonImageFilesFound?: (files: DrivePhoto[]) => void;
   };
 }
 
@@ -58,11 +81,10 @@ function validateMountProps(gkey: string, dirId: string, listEndpoint?: string):
 
 /**
  * Grid gallery for Google Drive image folders (drop-in compatible with `react-gdrive-image-viewer`).
- *
- * @param props - Viewer configuration
  */
 export function DriveGallery({ gkey, dirId, name, options }: DriveGalleryProps) {
   const [propError, setPropError] = useState<DrivePhotosError | null>(null);
+  const gkeyWarnedRef = useRef(false);
 
   useEffect(() => {
     try {
@@ -78,6 +100,23 @@ export function DriveGallery({ gkey, dirId, name, options }: DriveGalleryProps) 
     }
   }, [gkey, dirId, options?.listEndpoint, options]);
 
+  useEffect(() => {
+    if (gkeyWarnedRef.current) return;
+    if (typeof window === 'undefined') return;
+    if (!gkey || gkey.length === 0) return;
+    if (options?.listEndpoint) return;
+    gkeyWarnedRef.current = true;
+    if (typeof console !== 'undefined' && console.warn) {
+      console.warn(
+        '[drive-photos] ⚠️ Security Warning: You are passing an API key (gkey) directly to <DriveGallery> in a browser context. ' +
+          'This exposes your Google API key to anyone who inspects your JavaScript bundle. ' +
+          'Use the Next.js proxy pattern instead: set up @sholajapheth/drive-photos-next route handlers ' +
+          'and pass options.listEndpoint and options.proxyEndpoint instead of gkey. ' +
+          'See https://drive-photos.dev/docs#security for details.'
+      );
+    }
+  }, [gkey, options?.listEndpoint]);
+
   const { photos, loading, error } = useDriveGallery({
     apiKey: options?.listEndpoint ? undefined : gkey,
     folderId: dirId,
@@ -87,6 +126,8 @@ export function DriveGallery({ gkey, dirId, name, options }: DriveGalleryProps) 
     includeSharedDrives: options?.includeSharedDrives,
     enabled: !propError,
     listEndpoint: options?.listEndpoint,
+    warnNonImageFilesInFolder: options?.warnNonImageFilesInFolder,
+    onNonImageFilesFound: options?.onNonImageFilesFound,
     onError: options?.onError,
   });
 
@@ -128,6 +169,8 @@ export function DriveGallery({ gkey, dirId, name, options }: DriveGalleryProps) 
       </div>
     );
   }
+
+  const proxyBase = options?.proxyEndpoint ?? '/api/photos';
 
   return (
     <div
@@ -172,6 +215,7 @@ export function DriveGallery({ gkey, dirId, name, options }: DriveGalleryProps) 
                 hover={options?.hover}
                 className={options?.attachClass?.[photo.name]}
                 onClick={onPhotoClick}
+                proxyBase={proxyBase}
               />
             </div>
           );
@@ -185,6 +229,7 @@ export function DriveGallery({ gkey, dirId, name, options }: DriveGalleryProps) 
         onClose={() => setModalOpen(false)}
         onIndexChange={setModalIndex}
         fullscreenSize={options?.fullscreenSize ?? 1920}
+        proxyBase={proxyBase}
       />
     </div>
   );

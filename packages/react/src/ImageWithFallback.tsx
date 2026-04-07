@@ -17,6 +17,8 @@ export interface ImageWithFallbackProps {
   id?: string;
   style?: React.CSSProperties;
   hover?: boolean;
+  /** Base path for the first-party image proxy (default `/api/photos`). */
+  proxyBase?: string;
 }
 
 /**
@@ -33,8 +35,12 @@ export function ImageWithFallback({
   id,
   style,
   hover,
+  proxyBase,
 }: ImageWithFallbackProps) {
-  const urls = useMemo(() => buildFallbackUrls(photo.id, size), [photo.id, size]);
+  const urls = useMemo(
+    () => buildFallbackUrls(photo.id, size, { proxyBase: proxyBase ?? '/api/photos' }),
+    [photo.id, size, proxyBase]
+  );
   const [index, setIndex] = useState(0);
   const [broken, setBroken] = useState(false);
   const src = urls[index] ?? '';

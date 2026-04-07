@@ -25,17 +25,25 @@ describe('fetchWithFallback', () => {
   });
 
   it('throws when all fail', async () => {
-    await expect(fetchWithFallback(['http://a', 'http://b'])).rejects.toThrow(DrivePhotosError);
+    await expect(
+      fetchWithFallback([
+        'https://www.googleapis.com/drive/v3/files/a',
+        'https://drive.google.com/thumbnail?id=b',
+      ])
+    ).rejects.toThrow(DrivePhotosError);
   });
 
   it('returns first ok response', async () => {
     vi.mocked(fetch).mockImplementation(async (url) => {
-      if (String(url).includes('second')) {
+      if (String(url).includes('second-path')) {
         return new Response(new Uint8Array([1]), { status: 200 });
       }
       return new Response(null, { status: 500 });
     });
-    const res = await fetchWithFallback(['http://first', 'http://second']);
+    const res = await fetchWithFallback([
+      'https://www.googleapis.com/first-path',
+      'https://www.googleapis.com/second-path',
+    ]);
     expect(res.ok).toBe(true);
   });
 });

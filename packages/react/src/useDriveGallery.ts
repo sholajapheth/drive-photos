@@ -31,6 +31,12 @@ export interface UseDriveGalleryOptions {
    * Recommended for production to keep API keys on the server.
    */
   listEndpoint?: string;
+  /**
+   * When true (direct Drive API only), runs an extra listing to detect non-image files for security warnings.
+   */
+  warnNonImageFilesInFolder?: boolean;
+  /** Called when non-image files are found in the folder (server listing or JSON field). */
+  onNonImageFilesFound?: (files: DrivePhoto[]) => void;
   /** Called when an error occurs after retries. */
   onError?: (error: DrivePhotosError) => void;
 }
@@ -65,6 +71,8 @@ export function useDriveGallery(options: UseDriveGalleryOptions): UseDriveGaller
     enabled = true,
     cacheResults = true,
     listEndpoint,
+    warnNonImageFilesInFolder,
+    onNonImageFilesFound,
     onError,
   } = options;
 
@@ -77,11 +85,11 @@ export function useDriveGallery(options: UseDriveGalleryOptions): UseDriveGaller
   const cacheKey = useMemo(() => {
     try {
       const id = normalizeFolderId(folderId);
-      return `${id}:${pageSize ?? 1000}:${orderBy ?? 'createdTime'}:${mimeTypes?.join(',') ?? 'default'}:${listEndpoint ?? 'direct'}`;
+      return `${id}:${pageSize ?? 1000}:${orderBy ?? 'createdTime'}:${mimeTypes?.join(',') ?? 'default'}:${listEndpoint ?? 'direct'}:${warnNonImageFilesInFolder ? 'warn' : 'nowarn'}`;
     } catch {
       return null;
     }
-  }, [folderId, pageSize, orderBy, mimeTypes, listEndpoint]);
+  }, [folderId, pageSize, orderBy, mimeTypes, listEndpoint, warnNonImageFilesInFolder]);
 
   const runFetch = useCallback(async () => {
     if (!enabled || cacheKey === null) return;
@@ -105,6 +113,9 @@ export function useDriveGallery(options: UseDriveGalleryOptions): UseDriveGaller
       if (cached) {
         setPhotos(cached.photos);
         setTotal(cached.total);
+        if (cached.nonImageFiles?.length) {
+          onNonImageFilesFound?.(cached.nonImageFiles);
+        }
         setLoading(false);
         return;
       }
@@ -127,7 +138,11 @@ export function useDriveGallery(options: UseDriveGalleryOptions): UseDriveGaller
             res.status >= 500
           );
         }
-        return (await res.json()) as FetchPhotosResult;
+        const json = (await res.json()) as FetchPhotosResult;
+        if (json.nonImageFiles?.length) {
+          onNonImageFilesFound?.(json.nonImageFiles);
+        }
+        return json;
       }
 
       if (!apiKey) {
@@ -154,6 +169,7 @@ export function useDriveGallery(options: UseDriveGalleryOptions): UseDriveGaller
           mimeTypes,
           orderBy,
           includeSharedDrives,
+          warnNonImageFilesInFolder,
         });
       } catch (e) {
         if (
@@ -173,6 +189,9 @@ export function useDriveGallery(options: UseDriveGalleryOptions): UseDriveGaller
       if (ac.signal.aborted) return;
       setPhotos(result.photos);
       setTotal(result.total);
+      if (result.nonImageFiles?.length) {
+        onNonImageFilesFound?.(result.nonImageFiles);
+      }
       if (cacheResults && cacheKey) {
         photoListCache.set(cacheKey, result);
       }
@@ -201,6 +220,8 @@ export function useDriveGallery(options: UseDriveGalleryOptions): UseDriveGaller
     enabled,
     cacheResults,
     listEndpoint,
+    warnNonImageFilesInFolder,
+    onNonImageFilesFound,
     onError,
     cacheKey,
   ]);

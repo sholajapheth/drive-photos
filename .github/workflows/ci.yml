@@ -108,13 +108,42 @@ jobs:
           [ "$CORE_SIZE" -lt 500 ] || (echo "core bundle too large" && exit 1)
           [ "$REACT_SIZE" -lt 500 ] || (echo "react bundle too large" && exit 1)
           [ "$NEXT_SIZE" -lt 500 ] || (echo "next bundle too large" && exit 1)
-      - name: Verify API key string not in react bundle
+      - name: Verify API key not referenced in react bundle
         run: |
-          if grep -r "GOOGLE_DRIVE_API_KEY" packages/react/dist/ 2>/dev/null; then
-            echo "SECURITY: API key reference found in react bundle"
+          if grep -rE "GOOGLE_DRIVE_API_KEY|NEXT_PUBLIC_GOOGLE|gkey.*process\.env" packages/react/dist/ 2>/dev/null; then
+            echo "SECURITY VIOLATION: API key reference pattern found in react client bundle"
             exit 1
           fi
-          echo "OK: no GOOGLE_DRIVE_API_KEY in react dist"
+          echo "✓ Security check passed: no disallowed API key patterns in react dist"
+      - name: Verify package install scripts (informational)
+        run: |
+          npm ls --all --json 2>/dev/null | node -e "
+            const fs = require('fs');
+            let raw = '';
+            try { raw = fs.readFileSync(0, 'utf8'); } catch { process.exit(0); }
+            if (!raw.trim()) process.exit(0);
+            const data = JSON.parse(raw);
+            const checkNode = (node, path) => {
+              if (!node || typeof node !== 'object') return;
+              if (node.scripts && (node.scripts.postinstall || node.scripts.install)) {
+                console.warn('⚠ Package with install script:', path);
+              }
+              const deps = { ...node.dependencies, ...node.devDependencies };
+              for (const [name, dep] of Object.entries(deps)) {
+                if (dep && typeof dep === 'object') checkNode(dep, path + ' > ' + name);
+              }
+            };
+            checkNode(data, data.name || 'root');
+          " || true
+      - name: Reminder — npm publish token scope
+        run: |
+          echo "Reminder: Use an Automation-scoped npm token in CI where possible to limit blast radius."
+      - name: Socket.dev security scan (optional)
+        if: ${{ secrets.SOCKET_SECURITY_KEY != '' }}
+        uses: SocketDev/socket-security-action@v1
+        with:
+          api-key: ${{ secrets.SOCKET_SECURITY_KEY }}
+        continue-on-error: true
       - uses: actions/upload-artifact@v4
         with:
           name: dist-packages

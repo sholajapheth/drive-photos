@@ -11,6 +11,7 @@ export type DrivePhotosErrorCode =
   | 'RATE_LIMITED'
   | 'NETWORK_ERROR'
   | 'IMAGE_NOT_FOUND'
+  | 'UNSUPPORTED_MEDIA'
   | 'CONFIGURATION_ERROR';
 
 /**

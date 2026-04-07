@@ -3,7 +3,9 @@ import {
   sanitizePhotoName,
   validateApiKey,
   validateConfig,
+  validateFallbackUrl,
   validateFileId,
+  validateRelativeProxyUrl,
   validateSize,
 } from '../src/sanitizer.js';
 import { DrivePhotosError } from '../src/errors.js';
@@ -44,6 +46,34 @@ describe('sanitizePhotoName', () => {
   it('truncates long names', () => {
     const s = 'x'.repeat(300);
     expect(sanitizePhotoName(s).length).toBe(255);
+  });
+
+  it('strips angle brackets and script-like content', () => {
+    expect(sanitizePhotoName('<script>alert(1)</script>')).not.toMatch(/[<>]/);
+    expect(sanitizePhotoName('photo<script>.jpg')).toBe('photoscript.jpg');
+  });
+});
+
+describe('validateFallbackUrl', () => {
+  it('accepts allowlisted https hosts', () => {
+    expect(() => validateFallbackUrl('https://www.googleapis.com/v1/foo')).not.toThrow();
+    expect(() => validateFallbackUrl('https://drive.google.com/file')).not.toThrow();
+    expect(() => validateFallbackUrl('https://lh3.googleusercontent.com/x')).not.toThrow();
+  });
+
+  it('rejects http and unknown hosts', () => {
+    expect(() => validateFallbackUrl('http://www.googleapis.com/x')).toThrow(DrivePhotosError);
+    expect(() => validateFallbackUrl('https://evil.example/x')).toThrow(DrivePhotosError);
+  });
+});
+
+describe('validateRelativeProxyUrl', () => {
+  it('accepts /api/photos/[id]', () => {
+    expect(() => validateRelativeProxyUrl('/api/photos/1234567890abcdefghij')).not.toThrow();
+  });
+
+  it('rejects invalid paths', () => {
+    expect(() => validateRelativeProxyUrl('/other/1234567890abcdefghij')).toThrow(DrivePhotosError);
   });
 });
 

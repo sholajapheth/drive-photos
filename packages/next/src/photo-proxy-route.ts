@@ -2,12 +2,12 @@ import {
   buildFallbackUrls,
   DrivePhotosError,
   fallbackIndexToLevel,
+  fetchUrlWithSsrfGuard,
+  validateFallbackUrl,
   validateFileId,
   validateSize,
 } from '@sholajapheth/drive-photos-core';
 import { NextResponse, type NextRequest } from 'next/server';
-
-const ALLOWED = new Set(['www.googleapis.com', 'drive.google.com', 'lh3.googleusercontent.com']);
 
 export interface PhotoProxyRouteConfig {
   apiKey: string;
@@ -16,24 +16,11 @@ export interface PhotoProxyRouteConfig {
 /**
  * Validates that a URL uses an allowed hostname (SSRF protection).
  *
- * @param rawUrl - Candidate URL
- * @returns Parsed URL
- * @security Enforces hostname allowlist before any outbound fetch.
+ * @deprecated Prefer {@link validateFallbackUrl} from `@sholajapheth/drive-photos-core`.
  */
 export function assertAllowedImageUrl(rawUrl: string): URL {
-  let u: URL;
-  try {
-    u = new URL(rawUrl);
-  } catch {
-    throw new DrivePhotosError('INVALID_REQUEST', 'Invalid URL');
-  }
-  if (u.protocol !== 'https:') {
-    throw new DrivePhotosError('INVALID_REQUEST', 'Only https URLs are allowed');
-  }
-  if (!ALLOWED.has(u.hostname)) {
-    throw new DrivePhotosError('INVALID_REQUEST', 'Host not allowed');
-  }
-  return u;
+  validateFallbackUrl(rawUrl);
+  return new URL(rawUrl);
 }
 
 function buildServerFetchOrder(fileId: string, size: number, apiKey: string): string[] {
@@ -47,12 +34,17 @@ function levelLabelForIndex(index: number): string {
   return fallbackIndexToLevel(index);
 }
 
+function isSvgContentType(ct: string): boolean {
+  const lower = ct.toLowerCase();
+  return lower.includes('svg') || lower.includes('image/svg');
+}
+
 /**
  * Creates a Next.js App Router `GET` handler that proxies image bytes from Google endpoints.
  *
  * @param config - Must include API key used only server-side
  * @returns Route exports `{ GET }`
- * @security Validates file ids and URL hosts before fetching.
+ * @security Validates file ids and URL hosts before fetching; manual redirect handling; SVG blocked.
  */
 export function createPhotoProxyRoute(config: PhotoProxyRouteConfig) {
   async function GET(
@@ -94,39 +86,44 @@ export function createPhotoProxyRoute(config: PhotoProxyRouteConfig) {
 
     for (let i = 0; i < urls.length; i++) {
       const raw = urls[i]!;
-      let target: string;
-      try {
-        target = assertAllowedImageUrl(raw).toString();
-      } catch {
-        continue;
-      }
-
       const msLeft = deadline - Date.now();
       if (msLeft <= 0) break;
 
-      const controller = new AbortController();
-      const t = setTimeout(() => controller.abort(), Math.min(msLeft, 8000));
       try {
-        const res = await fetch(target, { signal: controller.signal });
-        if (!res.ok || !res.body) continue;
+        const res = await fetchUrlWithSsrfGuard(raw, {
+          timeoutMs: Math.min(msLeft, 8000),
+        });
+
+        if (!res.ok || !res.body) {
+          continue;
+        }
+
+        const ct = res.headers.get('content-type') ?? '';
+        if (isSvgContentType(ct)) {
+          continue;
+        }
 
         const headers = new Headers();
-        const ct = res.headers.get('content-type');
         if (ct) headers.set('Content-Type', ct);
         headers.set('Cache-Control', 'public, max-age=86400, stale-while-revalidate=3600');
         headers.set('X-Content-Type-Options', 'nosniff');
+        headers.set('Content-Security-Policy', "default-src 'none'");
+        headers.set('X-Frame-Options', 'DENY');
         headers.set('X-Drive-Photos-Fallback-Level', levelLabelForIndex(i));
 
         return new NextResponse(res.body, { status: 200, headers });
       } catch {
         // try next
-      } finally {
-        clearTimeout(t);
       }
     }
 
     return NextResponse.json(
-      { error: { code: 'IMAGE_NOT_FOUND', message: 'Image could not be loaded' } },
+      {
+        error: {
+          code: 'IMAGE_NOT_FOUND',
+          message: 'Image could not be loaded or format is not supported',
+        },
+      },
       { status: 404 }
     );
   }

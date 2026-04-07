@@ -31,6 +31,12 @@ export interface DriveGalleryConfig {
   mimeTypes?: string[];
   /** Include shared drives (default true). */
   includeSharedDrives?: boolean;
+  /**
+   * When true, performs an additional Drive listing to detect non-image files in the folder
+   * and returns them in {@link FetchPhotosResult.nonImageFiles}. Use for security warnings only;
+   * incurs extra API quota.
+   */
+  warnNonImageFilesInFolder?: boolean;
 }
 
 /**
@@ -42,6 +48,10 @@ export interface FetchPhotosResult {
   total: number;
   /** True if the Drive API indicated more results exist but were not fetched (should not happen when paginating fully). */
   truncated: boolean;
+  /**
+   * Present when {@link DriveGalleryConfig.warnNonImageFilesInFolder} was true and non-image files exist.
+   */
+  nonImageFiles?: DrivePhoto[];
 }
 
 /**

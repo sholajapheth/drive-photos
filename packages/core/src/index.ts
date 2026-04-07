@@ -5,7 +5,14 @@
 
 export { DrivePhotosError, type DrivePhotosErrorCode } from './errors.js';
 export { LRUCache, photoListCache } from './cache.js';
-export { buildFallbackUrls, fallbackIndexToLevel, fetchWithFallback } from './fallback.js';
+export {
+  buildFallbackUrls,
+  fallbackIndexToLevel,
+  fetchUrlWithSsrfGuard,
+  fetchWithFallback,
+  type BuildFallbackUrlsOptions,
+  type FetchWithFallbackOptions,
+} from './fallback.js';
 export { listDrivePhotos } from './fetcher.js';
 export { buildMimeQuery, SUPPORTED_MIME_TYPES } from './mime.js';
 export { normalizeFolderId } from './normalizer.js';
@@ -14,7 +21,9 @@ export {
   sanitizePhotoName,
   validateApiKey,
   validateConfig,
+  validateFallbackUrl,
   validateFileId,
+  validateRelativeProxyUrl,
   validateSize,
 } from './sanitizer.js';
 export type { DriveGalleryConfig, DrivePhoto, FallbackLevel, FetchPhotosResult } from './types.js';

@@ -30,6 +30,7 @@
     "apps/*"
   ],
   "scripts": {
+    "dev": "npm run dev -w drive-photos-docs",
     "build": "turbo run build",
     "test": "turbo run test",
     "test:coverage": "turbo run test:coverage",
