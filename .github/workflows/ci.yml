@@ -75,6 +75,9 @@ jobs:
     name: Build
     needs: [lint, typecheck, test, audit]
     runs-on: ubuntu-latest
+    # secrets.* cannot be used in step `if:` — expose only for conditional + Socket step
+    env:
+      SOCKET_SECURITY_KEY: ${{ secrets.SOCKET_SECURITY_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -139,10 +142,10 @@ jobs:
         run: |
           echo "Reminder: Use an Automation-scoped npm token in CI where possible to limit blast radius."
       - name: Socket.dev security scan (optional)
-        if: ${{ secrets.SOCKET_SECURITY_KEY != '' }}
+        if: ${{ env.SOCKET_SECURITY_KEY != '' }}
         uses: SocketDev/socket-security-action@v1
         with:
-          api-key: ${{ secrets.SOCKET_SECURITY_KEY }}
+          api-key: ${{ env.SOCKET_SECURITY_KEY }}
         continue-on-error: true
       - uses: actions/upload-artifact@v4
         with:
