@@ -88,7 +88,9 @@ export async function fetchUrlWithSsrfGuard(
 ): Promise<Response> {
   const timeoutMs = init.timeoutMs ?? 8000;
   const proxyBasePrefix = init.proxyBasePrefix ?? DEFAULT_PROXY_PREFIX;
-  const { timeoutMs: _tm, proxyBasePrefix: _pb, ...restInit } = init;
+  const restInit = { ...init };
+  delete (restInit as { timeoutMs?: number }).timeoutMs;
+  delete (restInit as { proxyBasePrefix?: string }).proxyBasePrefix;
 
   const doFetch = async (url: string, depth: number): Promise<Response> => {
     if (depth > 3) {
