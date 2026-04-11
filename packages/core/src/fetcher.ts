@@ -49,8 +49,9 @@ async function listNonImageFilesInFolder(
   const out: DrivePhoto[] = [];
   let nextPageToken: string | undefined;
   const pageSize = Math.min(config.pageSize ?? 1000, 1000);
-  const orderBy = `${(config.orderBy ?? 'createdTime')} desc`;
-  const fields = 'nextPageToken,files(id,name,mimeType,createdTime,thumbnailLink,webContentLink,size)';
+  const orderBy = `${config.orderBy ?? 'createdTime'} desc`;
+  const fields =
+    'nextPageToken,files(id,name,mimeType,createdTime,thumbnailLink,webContentLink,size)';
 
   do {
     const params = new URLSearchParams({

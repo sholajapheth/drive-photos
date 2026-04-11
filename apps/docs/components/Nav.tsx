@@ -16,15 +16,7 @@ const links: NavItem[] = [
   { href: 'https://github.com/sholajapheth/drive-photos', label: 'GitHub', external: true },
 ];
 
-function NavLink({
-  href,
-  label,
-  external,
-}: {
-  href: string;
-  label: string;
-  external?: boolean;
-}) {
+function NavLink({ href, label, external }: { href: string; label: string; external?: boolean }) {
   const pathname = usePathname();
   const active = !external && (href === '/' ? pathname === '/' : pathname.startsWith(href));
 

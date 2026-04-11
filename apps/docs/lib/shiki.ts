@@ -3,14 +3,7 @@ import type { BundledLanguage, BundledTheme } from 'shiki';
 
 const theme: BundledTheme = 'github-dark-dimmed';
 
-const langs: BundledLanguage[] = [
-  'tsx',
-  'typescript',
-  'javascript',
-  'jsx',
-  'bash',
-  'json',
-];
+const langs: BundledLanguage[] = ['tsx', 'typescript', 'javascript', 'jsx', 'bash', 'json'];
 
 let highlighterPromise: ReturnType<typeof getSingletonHighlighter> | null = null;
 

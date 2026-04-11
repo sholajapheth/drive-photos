@@ -217,7 +217,12 @@ export function DemoGallery() {
           <p className="hint" style={{ marginBottom: 12 }}>
             Want to try without an API key? Use our demo folder:
           </p>
-          <button type="button" className="btn-secondary" style={{ width: '100%' }} onClick={useDemoFolder}>
+          <button
+            type="button"
+            className="btn-secondary"
+            style={{ width: '100%' }}
+            onClick={useDemoFolder}
+          >
             Use demo folder →
           </button>
         </div>
@@ -233,7 +238,9 @@ export function DemoGallery() {
           ) : !mounted ? (
             <div className="demo-empty">
               <FolderOpen size={64} strokeWidth={1} color="var(--text-faint)" />
-              <p style={{ fontSize: 17, color: 'var(--text)', marginBottom: 8 }}>Your gallery will appear here</p>
+              <p style={{ fontSize: 17, color: 'var(--text)', marginBottom: 8 }}>
+                Your gallery will appear here
+              </p>
               <p style={{ fontSize: 14 }}>Enter a folder ID above and click Load gallery</p>
             </div>
           ) : (

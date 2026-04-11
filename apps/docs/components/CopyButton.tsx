@@ -30,7 +30,9 @@ export function CopyButton({ text, className, 'aria-label': ariaLabel }: CopyBut
   return (
     <button
       type="button"
-      className={['copy-btn', copied ? 'copy-btn--success' : '', className].filter(Boolean).join(' ')}
+      className={['copy-btn', copied ? 'copy-btn--success' : '', className]
+        .filter(Boolean)
+        .join(' ')}
       onClick={onCopy}
       title={copied ? 'Copied!' : 'Copy'}
       aria-label={ariaLabel ?? (copied ? 'Copied' : 'Copy')}

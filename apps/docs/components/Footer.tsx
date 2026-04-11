@@ -41,7 +41,11 @@ export function Footer() {
               </a>
             </li>
             <li>
-              <a href="https://github.com/sholajapheth/drive-photos" target="_blank" rel="noopener noreferrer">
+              <a
+                href="https://github.com/sholajapheth/drive-photos"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 GitHub
               </a>
             </li>
@@ -71,7 +75,12 @@ export function Footer() {
           <ul className="site-footer-packages">
             {packages.map((p) => (
               <li key={p.name}>
-                <a href={p.href} target="_blank" rel="noopener noreferrer" className="site-footer-pkg">
+                <a
+                  href={p.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="site-footer-pkg"
+                >
                   <span>{p.name}</span>
                   <ExternalLink size={14} aria-hidden />
                 </a>
